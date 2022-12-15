@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu fx:id="menuDw" mnemonicParsing="false" text="Dowloader">
+          <items>
+            <MenuItem fx:id="miNewDownload" mnemonicParsing="false" text="New Dowload" />
+            <MenuItem fx:id="miStopDownloads" mnemonicParsing="false" onAction="#stopAllDownloads" text="Stop Dowloads" />
+          </items>
+        </Menu>
+        <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Abaout Dowloader" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+      <ScrollPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="374.0" prefWidth="640.0">
+        <content>
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="372.0" prefWidth="638.0">
+               <children>
+                  <TextField fx:id="tfUrl" layoutX="12.0" layoutY="45.0" prefHeight="26.0" prefWidth="611.0" />
+                  <Text fx:id="txtDw" layoutX="12.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Introduce la URL de la descarga" wrappingWidth="191.73672103881836" />
+                  <Button fx:id="btDownload" layoutX="134.0" layoutY="78.0" mnemonicParsing="false" onAction="#startDownload" prefHeight="26.0" prefWidth="200.0" text="Descargar" AnchorPane.leftAnchor="100.0" />
+                  <Button fx:id="btCancelAll" layoutX="447.0" layoutY="78.0" mnemonicParsing="false" onAction="#stopAllDownloads" prefHeight="26.0" prefWidth="200.0" text="Cancelar todas las descargas" AnchorPane.rightAnchor="100.0" />
+                  <TabPane fx:id="tpDownloads" layoutX="14.0" layoutY="121.0" prefHeight="240.0" prefWidth="610.0" tabClosingPolicy="UNAVAILABLE" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+  </children>
+</VBox>
