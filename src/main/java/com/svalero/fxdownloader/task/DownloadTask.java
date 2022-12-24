@@ -4,6 +4,7 @@ import com.svalero.fxdownloader.controller.DownloadController;
 import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -17,6 +18,8 @@ public class DownloadTask extends Task<Integer> {
 
     private URL url;
     private File file;
+
+    private JSONArray message = new JSONArray();
 
     private static final Logger logger = LogManager.getLogger(DownloadController.class);
 
@@ -33,6 +36,7 @@ public class DownloadTask extends Task<Integer> {
         URLConnection urlConnection = url.openConnection();
         double tamanio = urlConnection.getContentLength();
         double tamanioMb = tamanio / 1048576;
+        message.put(0,"/" + Math.round(tamanioMb * 100) / 100d + "Mb");
 
         //Guardamos la descarga en el buffer
         BufferedInputStream inputStream = new BufferedInputStream(url.openStream());
@@ -57,14 +61,18 @@ public class DownloadTask extends Task<Integer> {
             totalRead += bytesRead;
 
             //Progreso de la descarga
-            progress = ((double) totalRead / tamanio);
+            progress = Math.round(((double) totalRead / tamanio) * 100) / 100d;
+            double totalReadMb = totalRead / 1048576;
+            message.put(1,totalReadMb);
+            message.put(2,progress * 100 + " %");
             updateProgress(progress, 1);
-            updateMessage(progress * 100 + " %");
+            updateMessage(String.valueOf(message));
 
             if(isCancelled()) {
-                logger.trace("Descara " + url.toString() + " cancelada.");
+                logger.info("Descarga " + url.toString() + " cancelada.");
                 updateProgress(0, 0);
-                updateMessage("Cancelada");
+                message.put(2, "Cancelada");
+                updateMessage(String.valueOf(message));
                 return null;
             }
         }

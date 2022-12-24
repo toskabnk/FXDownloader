@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
@@ -22,9 +23,7 @@ import java.util.ResourceBundle;
 
 public class DownloadController implements Initializable {
 
-    public Label lbName;
     public TextField tfURL;
-
     public TextField tfFileName;
     public Button btStart;
     public Button btPause;
@@ -36,19 +35,19 @@ public class DownloadController implements Initializable {
     private DownloadTask downloadTask;
     private File file;
     private DirectoryChooser directoryChooser = new DirectoryChooser();
-
+    private JSONArray message;
 
     private static final Logger logger = LogManager.getLogger(DownloadController.class);
 
     public DownloadController(String urlTxt){
-        logger.info("Descarga " + urlTxt + " iniciada.");
+        logger.info("Descarga " + urlTxt + " creada.");
         this.urlTxt = urlTxt;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //Conseguimos el directorio del usuario y añadimos la carpeta de descargas
-        String downloadsFolder = System.getProperty("user.home") + "\\Downloads\\";
+        String downloadsFolder = System.getProperty("user.home") + File.separator + "Downloads" + File.separator;
 
         //Extraemos el nombre del archivo a descargar
         String fileName = urlTxt.substring(urlTxt.lastIndexOf("/") + 1);
@@ -106,11 +105,22 @@ public class DownloadController implements Initializable {
 
             //Estados de la tarea
             downloadTask.stateProperty().addListener((observableValue, oldState, newState) -> {
-                logger.info(observableValue.toString());
+                //logger.info(observableValue.toString());
                 if (newState == Worker.State.SUCCEEDED) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    logger.info("Descarga " + tfFileName.getText() + " ha sido finalizada con exito.");
                     alert.setContentText("La descarga " + tfFileName.getText() + " ha finalizado correctamente.");
                     alert.show();
+                    btStart.setDisable(false);
+                    btPause.setDisable(true);
+                } else if(newState == Worker.State.FAILED){
+                    logger.info("Descarga " + tfFileName.getText() + " fallida.");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Ha habido un error con la descarga " + tfFileName.getText());
+                    alert.show();
+                    btStart.setDisable(false);
+                    btPause.setDisable(true);
+                } else if (newState == Worker.State.CANCELLED) {
                     btStart.setDisable(false);
                     btPause.setDisable(true);
                 }
@@ -119,7 +129,11 @@ public class DownloadController implements Initializable {
 
             //Vamos actualizado el progreso de la descarga
             downloadTask.messageProperty().addListener((observableValue, oldValue, newValue) -> {
-                lbStatus.setText(newValue);
+                message = new JSONArray(newValue);
+                lbStatus.setText(message.get(2).toString());
+                lbSize.setText(message.get(0).toString());
+                lbProgressSize.setText(message.get(1).toString());
+
             });
 
             //Creamos el hilo de la descarga

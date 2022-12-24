@@ -47,15 +47,16 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu fx:id="menuDw" mnemonicParsing="false" text="Dowloader">
+        <Menu fx:id="menuDw" mnemonicParsing="false" text="Descargas">
           <items>
-            <MenuItem fx:id="miNewDownload" mnemonicParsing="false" text="New Dowload" />
-            <MenuItem fx:id="miStopDownloads" mnemonicParsing="false" onAction="#stopAllDownloads" text="Stop Dowloads" />
+            <MenuItem fx:id="miNewDownload" mnemonicParsing="false" text="Nueva descarga" />
+            <MenuItem fx:id="miStopDownloads" mnemonicParsing="false" onAction="#stopAllDownloads" text="Cancelar descargas" />
+                  <MenuItem fx:id="openLog" mnemonicParsing="false" onAction="#openLog" text="Abrir registro" />
           </items>
         </Menu>
-        <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
+        <Menu fx:id="menuHelp" mnemonicParsing="false" text="Ayuda">
           <items>
-            <MenuItem mnemonicParsing="false" text="Abaout Dowloader" />
+            <MenuItem mnemonicParsing="false" text="Sobre MultidescargaFX" />
           </items>
         </Menu>
       </menus>
@@ -68,7 +69,7 @@
                   <Text fx:id="txtDw" layoutX="12.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Introduce la URL de la descarga" wrappingWidth="191.73672103881836" />
                   <Button fx:id="btDownload" layoutX="134.0" layoutY="78.0" mnemonicParsing="false" onAction="#startDownload" prefHeight="26.0" prefWidth="200.0" text="Descargar" AnchorPane.leftAnchor="100.0" />
                   <Button fx:id="btCancelAll" layoutX="447.0" layoutY="78.0" mnemonicParsing="false" onAction="#stopAllDownloads" prefHeight="26.0" prefWidth="200.0" text="Cancelar todas las descargas" AnchorPane.rightAnchor="100.0" />
-                  <TabPane fx:id="tpDownloads" layoutX="14.0" layoutY="121.0" prefHeight="240.0" prefWidth="610.0" tabClosingPolicy="UNAVAILABLE" />
+                  <TabPane fx:id="tpDownloads" layoutX="14.0" layoutY="121.0" prefHeight="240.0" prefWidth="610.0" tabClosingPolicy="ALL_TABS" />
                </children>
             </AnchorPane>
         </content>
