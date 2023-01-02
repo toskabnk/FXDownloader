@@ -83,7 +83,7 @@ public class DownloadController implements Initializable {
         try {
 
             //Creamos el archivo donde se va a descargar con el directorio y nombre del archivo
-            File downloadFile = new File(directoryChooser.getInitialDirectory(), tfFileName.getText());
+            File downloadFile = new File(tfURL.getText(), tfFileName.getText());
 
             //Si es archivo es null no hacemos nada
             if (downloadFile == null) {

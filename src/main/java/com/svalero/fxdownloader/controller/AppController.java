@@ -24,8 +24,6 @@ public class AppController {
     public TabPane tpDownloads;
     private Map<String, DownloadController> allDownloads;
 
-    String logPath = "C:\\myFolder\\myFile.txt";
-
     public AppController(){
         allDownloads = new HashMap<>();
     }
