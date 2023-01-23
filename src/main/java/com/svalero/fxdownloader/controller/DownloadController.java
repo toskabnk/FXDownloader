@@ -20,6 +20,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DownloadController implements Initializable {
 
@@ -27,6 +28,7 @@ public class DownloadController implements Initializable {
     public TextField tfFileName;
     public Button btStart;
     public Button btPause;
+    public Button btCancel;
     public ProgressBar pbProgress;
     public Label lbStatus;
     public Label lbProgressSize;
@@ -36,6 +38,7 @@ public class DownloadController implements Initializable {
     private File file;
     private DirectoryChooser directoryChooser = new DirectoryChooser();
     private JSONArray message;
+    private AtomicBoolean downloadPaused = new AtomicBoolean(false);
 
     private static final Logger logger = LogManager.getLogger(DownloadController.class);
 
@@ -61,6 +64,7 @@ public class DownloadController implements Initializable {
 
         //Desactivamos el boton de pausa ya que no hay descarga iniciada
         btPause.setDisable(true);
+        btCancel.setDisable(true);
 
         //Añadimos un evento si pulsamos el cuadro de texto del directorio de descarga
         tfURL.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -89,15 +93,17 @@ public class DownloadController implements Initializable {
             if (downloadFile == null) {
                 //Desactivamos el boton de pausa
                 btPause.setDisable(true);
+                btCancel.setDisable(true);
                 return;
             }
 
             //Desactivamos el boton de Iniciar y activamos el de Pausa
             btPause.setDisable(false);
             btStart.setDisable(true);
+            btCancel.setDisable(false);
 
             //Creamos la tarea de la descarga
-            downloadTask = new DownloadTask(urlTxt, downloadFile);
+            downloadTask = new DownloadTask(urlTxt, downloadFile, downloadPaused);
 
             //Bindeamos la barra de progreso a el progreso de la tarea
             pbProgress.progressProperty().unbind();
@@ -111,8 +117,9 @@ public class DownloadController implements Initializable {
                     logger.info("Descarga " + tfFileName.getText() + " ha sido finalizada con exito.");
                     alert.setContentText("La descarga " + tfFileName.getText() + " ha finalizado correctamente.");
                     alert.show();
-                    btStart.setDisable(false);
+                    btStart.setDisable(true);
                     btPause.setDisable(true);
+                    btCancel.setDisable(true);
                 } else if(newState == Worker.State.FAILED){
                     logger.info("Descarga " + tfFileName.getText() + " fallida.");
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -120,9 +127,11 @@ public class DownloadController implements Initializable {
                     alert.show();
                     btStart.setDisable(false);
                     btPause.setDisable(true);
+                    btCancel.setDisable(true);
                 } else if (newState == Worker.State.CANCELLED) {
                     btStart.setDisable(false);
                     btPause.setDisable(true);
+                    btCancel.setDisable(true);
                 }
 
             });
@@ -146,13 +155,27 @@ public class DownloadController implements Initializable {
     }
 
     @FXML
-    public void pauseDownload(ActionEvent actionEvent){
-        stop();
+    public void pauseDownload(ActionEvent actionEvent) throws InterruptedException {
+        if(downloadPaused.get()){
+            btPause.setText("Pausar");
+            downloadPaused.set(false);
+            synchronized (downloadTask) {
+                downloadTask.notify();
+            }
+        } else {
+            btPause.setText("Reanudar");
+            downloadPaused.set(true);
+        }
     }
 
     @FXML
     public void openSaveDialog(ActionEvent actionEvent){
 
+    }
+
+    @FXML
+    public void cancelDownload(ActionEvent actionEvent){
+        stop();
     }
 
     public void stop(){
