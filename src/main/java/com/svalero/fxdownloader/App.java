@@ -1,12 +1,15 @@
 package com.svalero.fxdownloader;
 
 import com.svalero.fxdownloader.controller.AppController;
+import com.svalero.fxdownloader.controller.SplashScreenController;
 import com.svalero.fxdownloader.util.R;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class App extends Application {
 
@@ -17,13 +20,15 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(R.getUI("mainWindows.fxml"));
-        loader.setController(new AppController());
-        VBox vbox = loader.load();
+        loader.setLocation(R.getUI("splashScreen.fxml"));
+        loader.setController(new SplashScreenController());
 
-        Scene scene = new Scene(vbox);
+        AnchorPane anchorPane = loader.load();
+
+        Scene scene = new Scene(anchorPane);
+
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
-        stage.setTitle("FXDownloader");
         stage.show();
     }
 
