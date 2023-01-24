@@ -26,6 +26,7 @@ public class DownloadController implements Initializable {
 
     public TextField tfURL;
     public TextField tfFileName;
+    public TextField tfDelay;
     public Button btStart;
     public Button btPause;
     public Button btCancel;
@@ -144,9 +145,23 @@ public class DownloadController implements Initializable {
                 lbProgressSize.setText(message.get(1).toString());
 
             });
+            Integer delay = 0;
+            try{
+                delay = Integer.parseInt(tfDelay.getText());
+            } catch (NumberFormatException nfe){
+                delay = 0;
+            }
 
             //Creamos el hilo de la descarga
-            new Thread(downloadTask).start();
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            new Thread(downloadTask).start();
+                        }
+                    },
+                    1000 * delay);
+
 
         } catch (MalformedURLException murle){
             murle.printStackTrace();
@@ -182,6 +197,9 @@ public class DownloadController implements Initializable {
         if(downloadTask != null){
             downloadTask.cancel();
             btStart.setDisable(false);
+            lbStatus.setText("");
+            lbSize.setText("");
+            lbProgressSize.setText("");
         }
     }
 }
