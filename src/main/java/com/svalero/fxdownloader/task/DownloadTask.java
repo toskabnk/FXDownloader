@@ -13,19 +13,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DownloadTask extends Task<Integer> {
 
     private URL url;
     private File file;
+    private AtomicBoolean downloadPaused;
 
     private JSONArray message = new JSONArray();
 
     private static final Logger logger = LogManager.getLogger(DownloadController.class);
 
-    public DownloadTask(String textURL, File file) throws MalformedURLException{
+    public DownloadTask(String textURL, File file, AtomicBoolean dowloadPaused) throws MalformedURLException{
         url = new URL(textURL);
         this.file = file;
+        this.downloadPaused = dowloadPaused;
+
     }
 
     @Override
@@ -50,7 +54,11 @@ public class DownloadTask extends Task<Integer> {
 
         //Leemos una secuenca de bytes del archivo y lo almacenamos en el buffer
         while ((bytesRead = inputStream.read(dataBuffer)) != -1){
-
+            if(downloadPaused.get()){
+                synchronized (this) {
+                    this.wait();
+                }
+            }
             //Para que la descarga no sea tan rapida
             Thread.sleep(1);
 

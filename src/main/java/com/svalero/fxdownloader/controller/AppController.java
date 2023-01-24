@@ -9,12 +9,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class AppController {
 
@@ -83,6 +86,30 @@ public class AppController {
             allDownloads.put(url, downloadController);
         } catch (IOException ioe) {
             ioe.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void downloadFromFile() {
+        try {
+
+            FileChooser fileChooser = new FileChooser();
+            File downloadFile = fileChooser.showOpenDialog(tfUrl.getScene().getWindow());
+            if (downloadFile == null)
+                return;
+
+            // Leer fichero
+            Scanner reader = new Scanner(downloadFile);
+            while (reader.hasNextLine()) {
+                String data = reader.nextLine();
+                System.out.println(data);
+                // Lanzar controlador y descarga
+                launchDownload(data);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Se ha producido un error");
+            e.printStackTrace();
         }
     }
 }
